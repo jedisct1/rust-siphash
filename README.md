@@ -4,7 +4,7 @@ SipHash implementation for Rust
 SipHash was recently removed from rust-core.
 
 This crate brings `SipHasher`, `SipHasher13` and `SipHash24` back.
-It is based on the original implementation from rust-core and implements the
+It is based on the original implementation from rust-core and exposes the
 same API.
 
 In addition, it can return 128-bit tags.
