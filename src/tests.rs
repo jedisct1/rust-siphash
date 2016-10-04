@@ -10,7 +10,7 @@
 
 
 use std::hash::{Hash, Hasher};
-use {SipHasher, SipHasher13, SipHasher24};
+use sip::{SipHasher, SipHasher13, SipHasher24};
 
 // Hash just the bytes of the slice, without length prefix
 struct Bytes<'a>(&'a [u8]);
