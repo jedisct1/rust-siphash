@@ -32,3 +32,6 @@ use siphasher::sip::{SipHasher, SipHasher13, SipHasher24};
 ```rust
 use siphasher::sip128::{Hasher128, Siphasher, SipHasher13, SipHasher24};
 ```
+
+[API documentation](https://docs.rs/siphasher/)
+-----------------------------------------------
