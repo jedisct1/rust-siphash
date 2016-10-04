@@ -2,7 +2,7 @@
 authors = ["Frank Denis <github@pureftpd.org>"]
 keywords = ["crypto","hash"]
 license = "MIT/Apache-2.0"
-name = "siphash"
+name = "siphasher"
 description = "SipHash functions from rust-core < 1.13"
 repository = "https://github.com/jedisct1/rust-siphash"
 version = "0.1.0"
