@@ -1,6 +1,10 @@
 [package]
-name = "siphash"
-version = "0.1.0"
 authors = ["Frank Denis <github@pureftpd.org>"]
+keywords = ["crypto","hash"]
+license = "MIT/Apache-2.0"
+name = "siphash"
+description = "SipHash functions from rust-core < 1.13"
+repository = "https://github.com/jedisct1/rust-siphash"
+version = "0.1.0"
 
 [dependencies]
