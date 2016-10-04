@@ -8,7 +8,7 @@
 // option. This file may not be copied, modified, or distributed
 // except according to those terms.
 
-//! An implementation of SipHash.
+//! An implementation of SipHash with a 128-bit output.
 
 use std::hash;
 use std::marker::PhantomData;
