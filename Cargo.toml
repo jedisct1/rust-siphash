@@ -8,6 +8,6 @@ repository = "https://github.com/jedisct1/rust-siphash"
 homepage = "https://docs.rs/siphasher"
 documentation = "https://docs.rs/siphasher"
 readme = "README.md"
-version = "0.1.1"
+version = "0.1.2"
 
 [dependencies]
