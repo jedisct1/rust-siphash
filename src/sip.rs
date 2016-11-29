@@ -20,7 +20,7 @@ use std::slice;
 /// An implementation of SipHash 1-3.
 ///
 /// See: https://131002.net/siphash/
-#[derive(Debug, Clone, Default)]
+#[derive(Debug, Clone, Copy, Default)]
 pub struct SipHasher13 {
     hasher: Hasher<Sip13Rounds>,
 }
@@ -28,7 +28,7 @@ pub struct SipHasher13 {
 /// An implementation of SipHash 2-4.
 ///
 /// See: https://131002.net/siphash/
-#[derive(Debug, Clone, Default)]
+#[derive(Debug, Clone, Copy, Default)]
 pub struct SipHasher24 {
     hasher: Hasher<Sip24Rounds>,
 }
@@ -45,10 +45,10 @@ pub struct SipHasher24 {
 /// Although the SipHash algorithm is considered to be generally strong,
 /// it is not intended for cryptographic purposes. As such, all
 /// cryptographic uses of this implementation are _strongly discouraged_.
-#[derive(Debug, Clone, Default)]
+#[derive(Debug, Clone, Copy, Default)]
 pub struct SipHasher(SipHasher24);
 
-#[derive(Debug)]
+#[derive(Debug, Clone, Copy)]
 struct Hasher<S: Sip> {
     k0: u64,
     k1: u64,
@@ -341,21 +341,6 @@ impl<S: Sip> hash::Hasher for Hasher<S> {
     }
 }
 
-impl<S: Sip> Clone for Hasher<S> {
-    #[inline]
-    fn clone(&self) -> Hasher<S> {
-        Hasher {
-            k0: self.k0,
-            k1: self.k1,
-            length: self.length,
-            state: self.state,
-            tail: self.tail,
-            ntail: self.ntail,
-            _marker: self._marker,
-        }
-    }
-}
-
 impl<S: Sip> Default for Hasher<S> {
     /// Creates a `Hasher<S>` with the two initial keys set to 0.
     #[inline]
@@ -370,7 +355,7 @@ trait Sip {
     fn d_rounds(&mut State);
 }
 
-#[derive(Debug, Clone, Default)]
+#[derive(Debug, Clone, Copy, Default)]
 struct Sip13Rounds;
 
 impl Sip for Sip13Rounds {
@@ -387,7 +372,7 @@ impl Sip for Sip13Rounds {
     }
 }
 
-#[derive(Debug, Clone, Default)]
+#[derive(Debug, Clone, Copy, Default)]
 struct Sip24Rounds;
 
 impl Sip for Sip24Rounds {

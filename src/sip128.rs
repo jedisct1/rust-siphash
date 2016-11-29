@@ -18,20 +18,20 @@ use std::ptr;
 use std::slice;
 
 /// A 128-bit (2x64) hash output
-#[derive(Debug, Clone, Default)]
+#[derive(Debug, Clone, Copy, Default)]
 pub struct Hash128 {
     pub h1: u64,
     pub h2: u64,
 }
 
 /// An implementation of SipHash128 1-3.
-#[derive(Debug, Clone, Default)]
+#[derive(Debug, Clone, Copy, Default)]
 pub struct SipHasher13 {
     hasher: Hasher<Sip13Rounds>,
 }
 
 /// An implementation of SipHash128 2-4.
-#[derive(Debug, Clone, Default)]
+#[derive(Debug, Clone, Copy, Default)]
 pub struct SipHasher24 {
     hasher: Hasher<Sip24Rounds>,
 }
@@ -46,10 +46,10 @@ pub struct SipHasher24 {
 /// Although the SipHash algorithm is considered to be generally strong,
 /// it is not intended for cryptographic purposes. As such, all
 /// cryptographic uses of this implementation are _strongly discouraged_.
-#[derive(Debug, Clone, Default)]
+#[derive(Debug, Clone, Copy, Default)]
 pub struct SipHasher(SipHasher24);
 
-#[derive(Debug)]
+#[derive(Debug, Copy)]
 struct Hasher<S: Sip> {
     k0: u64,
     k1: u64,
@@ -412,7 +412,7 @@ trait Sip {
     fn d_rounds(&mut State);
 }
 
-#[derive(Debug, Clone, Default)]
+#[derive(Debug, Clone, Copy, Default)]
 struct Sip13Rounds;
 
 impl Sip for Sip13Rounds {
@@ -429,7 +429,7 @@ impl Sip for Sip13Rounds {
     }
 }
 
-#[derive(Debug, Clone, Default)]
+#[derive(Debug, Clone, Copy, Default)]
 struct Sip24Rounds;
 
 impl Sip for Sip24Rounds {
