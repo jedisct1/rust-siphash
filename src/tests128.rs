@@ -45,7 +45,7 @@ macro_rules! u8to64_le {
     });
 }
 
-fn hash_with<H: Hasher + Hasher128, T: Hash>(mut st: H, x: &T) -> Vec<u8> {
+fn hash_with<H: Hasher + Hasher128, T: Hash>(mut st: H, x: &T) -> [u8; 16] {
     x.hash(&mut st);
     st.finish128().into_bytes()
 }
