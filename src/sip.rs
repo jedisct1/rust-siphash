@@ -10,12 +10,12 @@
 
 //! An implementation of SipHash.
 
-use std::cmp;
-use std::hash;
-use std::marker::PhantomData;
-use std::mem;
-use std::ptr;
-use std::slice;
+use core::cmp;
+use core::hash;
+use core::marker::PhantomData;
+use core::mem;
+use core::ptr;
+use core::slice;
 
 /// An implementation of SipHash 1-3.
 ///

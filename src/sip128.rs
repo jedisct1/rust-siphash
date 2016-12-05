@@ -10,12 +10,12 @@
 
 //! An implementation of SipHash with a 128-bit output.
 
-use std::cmp;
-use std::hash;
-use std::marker::PhantomData;
-use std::mem;
-use std::ptr;
-use std::slice;
+use core::cmp;
+use core::hash;
+use core::marker::PhantomData;
+use core::mem;
+use core::ptr;
+use core::slice;
 
 /// A 128-bit (2x64) hash output
 #[derive(Debug, Clone, Copy, Default)]
@@ -450,8 +450,8 @@ impl Sip for Sip24Rounds {
 
 impl Hash128 {
     /// Convert into a 16-bytes vector
-    pub fn into_bytes(&self) -> Vec<u8> {
-        let mut bytes = vec![0u8; 16];
+    pub fn into_bytes(&self) -> [u8; 16] {
+        let mut bytes = [0u8; 16];
         let h1 = self.h1.to_le();
         let h2 = self.h2.to_le();
         unsafe {
