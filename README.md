@@ -10,7 +10,7 @@ same API.
 In addition, it can return 128-bit tags.
 
 The `sip` module implements the standard 64-bit mode, whereas the `sip128`
-module implements the experimental 128-bit mode.
+module implements the 128-bit mode.
 
 Usage
 -----
