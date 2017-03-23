@@ -245,7 +245,7 @@ fn test_siphash_2_4() {
 #[cfg(target_arch = "arm")]
 fn test_hash_usize() {
     let val = 0xdeadbeef_deadbeef_u64;
-    assert!(hash(&(val as u64)) != hash(&(val as usize)));
+    assert_ne!(hash(&(val as u64)), hash(&(val as usize)));
     assert_eq!(hash(&(val as u32)), hash(&(val as usize)));
 }
 #[test]
@@ -253,13 +253,13 @@ fn test_hash_usize() {
 fn test_hash_usize() {
     let val = 0xdeadbeef_deadbeef_u64;
     assert_eq!(hash(&(val as u64)), hash(&(val as usize)));
-    assert!(hash(&(val as u32)) != hash(&(val as usize)));
+    assert_ne!(hash(&(val as u32)), hash(&(val as usize)));
 }
 #[test]
 #[cfg(target_arch = "x86")]
 fn test_hash_usize() {
     let val = 0xdeadbeef_deadbeef_u64;
-    assert!(hash(&(val as u64)) != hash(&(val as usize)));
+    assert_ne(hash(&(val as u64)), hash(&(val as usize)));
     assert_eq!(hash(&(val as u32)), hash(&(val as usize)));
 }
 
@@ -275,14 +275,14 @@ fn test_hash_idempotent() {
 fn test_hash_no_bytes_dropped_64() {
     let val = 0xdeadbeef_deadbeef_u64;
 
-    assert!(hash(&val) != hash(&zero_byte(val, 0)));
-    assert!(hash(&val) != hash(&zero_byte(val, 1)));
-    assert!(hash(&val) != hash(&zero_byte(val, 2)));
-    assert!(hash(&val) != hash(&zero_byte(val, 3)));
-    assert!(hash(&val) != hash(&zero_byte(val, 4)));
-    assert!(hash(&val) != hash(&zero_byte(val, 5)));
-    assert!(hash(&val) != hash(&zero_byte(val, 6)));
-    assert!(hash(&val) != hash(&zero_byte(val, 7)));
+    assert_ne!(hash(&val), hash(&zero_byte(val, 0)));
+    assert_ne!(hash(&val), hash(&zero_byte(val, 1)));
+    assert_ne!(hash(&val), hash(&zero_byte(val, 2)));
+    assert_ne!(hash(&val), hash(&zero_byte(val, 3)));
+    assert_ne!(hash(&val), hash(&zero_byte(val, 4)));
+    assert_ne!(hash(&val), hash(&zero_byte(val, 5)));
+    assert_ne!(hash(&val), hash(&zero_byte(val, 6)));
+    assert_ne!(hash(&val), hash(&zero_byte(val, 7)));
 
     fn zero_byte(val: u64, byte: usize) -> u64 {
         assert!(byte < 8);
@@ -294,10 +294,10 @@ fn test_hash_no_bytes_dropped_64() {
 fn test_hash_no_bytes_dropped_32() {
     let val = 0xdeadbeef_u32;
 
-    assert!(hash(&val) != hash(&zero_byte(val, 0)));
-    assert!(hash(&val) != hash(&zero_byte(val, 1)));
-    assert!(hash(&val) != hash(&zero_byte(val, 2)));
-    assert!(hash(&val) != hash(&zero_byte(val, 3)));
+    assert_ne!(hash(&val), hash(&zero_byte(val, 0)));
+    assert_ne!(hash(&val), hash(&zero_byte(val, 1)));
+    assert_ne!(hash(&val), hash(&zero_byte(val, 2)));
+    assert_ne!(hash(&val), hash(&zero_byte(val, 3)));
 
     fn zero_byte(val: u32, byte: usize) -> u32 {
         assert!(byte < 4);
@@ -318,6 +318,6 @@ fn test_hash_no_concat_alias() {
     let v = (&u[..1], &u[1..3], &u[3..]);
     let w = (&u[..], &u[4..4], &u[4..4]);
 
-    assert!(v != w);
-    assert!(hash(&v) != hash(&w));
+    assert_ne!(v, w);
+    assert_ne!(hash(&v), hash(&w));
 }

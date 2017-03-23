@@ -91,7 +91,7 @@ macro_rules! compress {
 /// `copy_nonoverlapping` to let the compiler generate the most efficient way
 /// to load it from a possibly unaligned address.
 ///
-/// Unsafe because: unchecked indexing at i..i+size_of(int_ty)
+/// Unsafe because: unchecked indexing at `i..i+size_of(int_ty)`
 macro_rules! load_int_le {
     ($buf:expr, $i:expr, $int_ty:ident) =>
     ({
@@ -346,7 +346,7 @@ impl<S: Sip> hash::Hasher for Hasher<S> {
 
         if self.ntail != 0 {
             needed = 8 - self.ntail;
-            self.tail |= unsafe { u8to64_le(msg, 0, cmp::min(length, needed)) } << 8 * self.ntail;
+            self.tail |= unsafe { u8to64_le(msg, 0, cmp::min(length, needed)) } << (8 * self.ntail);
             if length < needed {
                 self.ntail += length;
                 return;
@@ -450,7 +450,7 @@ impl Sip for Sip24Rounds {
 
 impl Hash128 {
     /// Convert into a 16-bytes vector
-    pub fn into_bytes(&self) -> [u8; 16] {
+    pub fn as_bytes(&self) -> [u8; 16] {
         let mut bytes = [0u8; 16];
         let h1 = self.h1.to_le();
         let h2 = self.h2.to_le();

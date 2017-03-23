@@ -47,7 +47,7 @@ macro_rules! u8to64_le {
 
 fn hash_with<H: Hasher + Hasher128, T: Hash>(mut st: H, x: &T) -> [u8; 16] {
     x.hash(&mut st);
-    st.finish128().into_bytes()
+    st.finish128().as_bytes()
 }
 
 #[test]
@@ -68,7 +68,7 @@ fn test_siphash128_1_3() {
         assert_eq!(vec, out[..]);
 
         let full = hash_with(SipHasher13::new_with_keys(k0, k1), &Bytes(&buf));
-        let i = state_inc.finish128().into_bytes();
+        let i = state_inc.finish128().as_bytes();
 
         assert_eq!(full, i);
         assert_eq!(full, vec);
@@ -98,7 +98,7 @@ fn test_siphash128_2_4() {
         assert_eq!(vec, out[..]);
 
         let full = hash_with(SipHasher24::new_with_keys(k0, k1), &Bytes(&buf));
-        let i = state_inc.finish128().into_bytes();
+        let i = state_inc.finish128().as_bytes();
 
         assert_eq!(full, i);
         assert_eq!(full, vec);

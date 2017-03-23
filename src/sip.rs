@@ -90,7 +90,7 @@ macro_rules! compress {
 /// `copy_nonoverlapping` to let the compiler generate the most efficient way
 /// to load it from a possibly unaligned address.
 ///
-/// Unsafe because: unchecked indexing at i..i+size_of(int_ty)
+/// Unsafe because: unchecked indexing at `i..i+size_of(int_ty)`
 macro_rules! load_int_le {
     ($buf:expr, $i:expr, $int_ty:ident) =>
     ({
@@ -293,7 +293,7 @@ impl<S: Sip> hash::Hasher for Hasher<S> {
 
         if self.ntail != 0 {
             needed = 8 - self.ntail;
-            self.tail |= unsafe { u8to64_le(msg, 0, cmp::min(length, needed)) } << 8 * self.ntail;
+            self.tail |= unsafe { u8to64_le(msg, 0, cmp::min(length, needed)) } << (8 * self.ntail);
             if length < needed {
                 self.ntail += length;
                 return;
