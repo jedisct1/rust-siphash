@@ -139,6 +139,11 @@ impl SipHasher {
     pub fn new_with_keys(key0: u64, key1: u64) -> SipHasher {
         SipHasher(SipHasher24::new_with_keys(key0, key1))
     }
+
+    /// Get the keys used by this hasher
+    pub fn keys(&self) -> (u64, u64) {
+        (self.0.hasher.k0, self.0.hasher.k1)
+    }
 }
 
 impl SipHasher13 {
@@ -153,6 +158,11 @@ impl SipHasher13 {
     pub fn new_with_keys(key0: u64, key1: u64) -> SipHasher13 {
         SipHasher13 { hasher: Hasher::new_with_keys(key0, key1) }
     }
+
+    /// Get the keys used by this hasher
+    pub fn keys(&self) -> (u64, u64) {
+        (self.hasher.k0, self.hasher.k1)
+    }
 }
 
 impl SipHasher24 {
@@ -166,6 +176,11 @@ impl SipHasher24 {
     #[inline]
     pub fn new_with_keys(key0: u64, key1: u64) -> SipHasher24 {
         SipHasher24 { hasher: Hasher::new_with_keys(key0, key1) }
+    }
+
+    /// Get the keys used by this hasher
+    pub fn keys(&self) -> (u64, u64) {
+        (self.hasher.k0, self.hasher.k1)
     }
 }
 
