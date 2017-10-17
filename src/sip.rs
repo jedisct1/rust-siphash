@@ -19,7 +19,7 @@ use core::slice;
 
 /// An implementation of SipHash 1-3.
 ///
-/// See: https://131002.net/siphash/
+/// See: <https://131002.net/siphash/>
 #[derive(Debug, Clone, Copy, Default)]
 pub struct SipHasher13 {
     hasher: Hasher<Sip13Rounds>,
@@ -27,7 +27,7 @@ pub struct SipHasher13 {
 
 /// An implementation of SipHash 2-4.
 ///
-/// See: https://131002.net/siphash/
+/// See: <https://131002.net/siphash/>
 #[derive(Debug, Clone, Copy, Default)]
 pub struct SipHasher24 {
     hasher: Hasher<Sip24Rounds>,
@@ -35,7 +35,7 @@ pub struct SipHasher24 {
 
 /// An implementation of SipHash 2-4.
 ///
-/// See: https://131002.net/siphash/
+/// See: <https://131002.net/siphash/>
 ///
 /// SipHash is a general-purpose hashing function: it runs at a good
 /// speed (competitive with Spooky and City) and permits strong _keyed_
