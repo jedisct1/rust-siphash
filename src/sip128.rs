@@ -54,9 +54,9 @@ struct Hasher<S: Sip> {
     k0: u64,
     k1: u64,
     length: usize, // how many bytes we've processed
-    state: State, // hash State
-    tail: u64, // unprocessed bytes le
-    ntail: usize, // how many bytes in tail are valid
+    state: State,  // hash State
+    tail: u64,     // unprocessed bytes le
+    ntail: usize,  // how many bytes in tail are valid
     _marker: PhantomData<S>,
 }
 
@@ -170,7 +170,9 @@ impl SipHasher13 {
     /// Creates a `SipHasher13` that is keyed off the provided keys.
     #[inline]
     pub fn new_with_keys(key0: u64, key1: u64) -> SipHasher13 {
-        SipHasher13 { hasher: Hasher::new_with_keys(key0, key1) }
+        SipHasher13 {
+            hasher: Hasher::new_with_keys(key0, key1),
+        }
     }
 
     /// Get the keys used by this hasher
@@ -197,7 +199,9 @@ impl SipHasher24 {
     /// Creates a `SipHasher24` that is keyed off the provided keys.
     #[inline]
     pub fn new_with_keys(key0: u64, key1: u64) -> SipHasher24 {
-        SipHasher24 { hasher: Hasher::new_with_keys(key0, key1) }
+        SipHasher24 {
+            hasher: Hasher::new_with_keys(key0, key1),
+        }
     }
 
     /// Get the keys used by this hasher

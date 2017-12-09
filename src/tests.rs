@@ -8,7 +8,6 @@
 // option. This file may not be copied, modified, or distributed
 // except according to those terms.
 
-
 use std::hash::{Hash, Hasher};
 use sip::{SipHasher, SipHasher13, SipHasher24};
 
