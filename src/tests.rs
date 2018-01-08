@@ -258,7 +258,7 @@ fn test_hash_usize() {
 #[cfg(target_arch = "x86")]
 fn test_hash_usize() {
     let val = 0xdeadbeef_deadbeef_u64;
-    assert_ne(hash(&(val as u64)), hash(&(val as usize)));
+    assert_ne!(hash(&(val as u64)), hash(&(val as usize)));
     assert_eq!(hash(&(val as u32)), hash(&(val as usize)));
 }
 
