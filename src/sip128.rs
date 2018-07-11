@@ -128,9 +128,48 @@ unsafe fn u8to64_le(buf: &[u8], start: usize, len: usize) -> u64 {
     out
 }
 
+/// Fill a slice of length < 8 bytes using a `u64`.
+/// 
+/// Unsafe because: use of raw pointers
+unsafe fn u64to8_le(mut v: u64, mut p: *mut u8, mut len: usize) {
+    if len > 3 {
+        let data = ((v & 0xFFFF_FFFF) as u32).to_le();
+        ptr::copy_nonoverlapping(&data as *const u32 as *const u8,
+                p,
+                mem::size_of::<u32>());
+        v = v >> 32;
+        p = p.offset(4);
+        len -= 2;
+    }
+    if len > 1 {
+        let data = ((v & 0xFFFF) as u16).to_le();
+        ptr::copy_nonoverlapping(&data as *const u16 as *const u8,
+                p,
+                mem::size_of::<u16>());
+        v = v >> 16;
+        p = p.offset(2);
+        len -= 2;
+    }
+    if len > 0 {
+        debug_assert_eq!(len, 1);
+        let data = (v & 0xFF) as u8;
+        *p = data;
+    }
+}
+
 pub trait Hasher128 {
     /// Return a 128-bit hash
     fn finish128(&self) -> Hash128;
+    
+    /// Fill a buffer with the hash result.
+    /// 
+    /// This is valid for any size buffer. In case the buffer is larger than
+    /// the normal output size, the hash result is extended as necessary to
+    /// fill the buffer. (This uses the hash algorithm as a pseudo-random number
+    /// generator to extend the result as far as necessary. The result cannot
+    /// contain more entropy than the hasher's state size of 256 bits, but
+    /// should appear random.
+    fn finish_buf(&self, buf: &mut [u8]);
 }
 
 impl SipHasher {
@@ -153,10 +192,14 @@ impl SipHasher {
 }
 
 impl Hasher128 for SipHasher {
-    /// Return a 128-bit hash
     #[inline]
     fn finish128(&self) -> Hash128 {
         self.0.finish128()
+    }
+    
+    #[inline]
+    fn finish_buf(&self, buf: &mut [u8]) {
+        self.0.finish_buf(buf)
     }
 }
 
@@ -182,10 +225,14 @@ impl SipHasher13 {
 }
 
 impl Hasher128 for SipHasher13 {
-    /// Return a 128-bit hash
     #[inline]
     fn finish128(&self) -> Hash128 {
         self.hasher.finish128()
+    }
+    
+    #[inline]
+    fn finish_buf(&self, buf: &mut [u8]) {
+        self.hasher.finish_buf(buf)
     }
 }
 
@@ -211,10 +258,14 @@ impl SipHasher24 {
 }
 
 impl Hasher128 for SipHasher24 {
-    /// Return a 128-bit hash
     #[inline]
     fn finish128(&self) -> Hash128 {
         self.hasher.finish128()
+    }
+    
+    #[inline]
+    fn finish_buf(&self, buf: &mut [u8]) {
+        self.hasher.finish_buf(buf)
     }
 }
 
@@ -301,6 +352,58 @@ impl<S: Sip> Hasher<S> {
         let h2 = state.v0 ^ state.v1 ^ state.v2 ^ state.v3;
 
         Hash128 { h1: h1, h2: h2 }
+    }
+    
+    pub fn finish_buf(&self, buf: &mut [u8]) {
+        let mut state = self.state;
+
+        let mut b: u64 = ((self.length as u64 & 0xff) << 56) | self.tail;
+        
+        let mut p: *mut u8 = buf.as_mut_ptr();
+        let mut rem = buf.len();
+
+        loop {
+            state.v3 ^= b;
+            S::c_rounds(&mut state);
+            state.v0 ^= b;
+
+            state.v2 ^= 0xee;
+            S::d_rounds(&mut state);
+            let h1 = state.v0 ^ state.v1 ^ state.v2 ^ state.v3;
+
+            state.v1 ^= 0xdd;
+            S::d_rounds(&mut state);
+            let h2 = state.v0 ^ state.v1 ^ state.v2 ^ state.v3;
+            
+            if rem >= 16 {
+                // I *think* we can rely on the obvious memory layout here?
+                let v = (h1.to_le(), h2.to_le());
+                unsafe {
+                    ptr::copy_nonoverlapping(&v.0 as *const u64 as *const u8,
+                            p,
+                            mem::size_of::<u64>() * 2);
+                    p = p.offset(16);
+                }
+                rem -= 16;
+                if rem > 0 {
+                    b = b.wrapping_add(1);
+                    continue;
+                }
+            } else if rem >= 8 {
+                let v = h1.to_le();
+                unsafe {
+                    ptr::copy_nonoverlapping(&v as *const u64 as *const u8,
+                            p,
+                            mem::size_of::<u64>());
+                    u64to8_le(h2, p.offset(8), rem - 8);
+                }
+            } else if rem > 0 {
+                unsafe {
+                    u64to8_le(h1, p, rem);
+                }
+            }
+            break;
+        }
     }
 }
 
