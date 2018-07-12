@@ -61,6 +61,7 @@ fn test_siphash128_1_3() {
     let k0 = 0x_07_06_05_04_03_02_01_00;
     let k1 = 0x_0f_0e_0d_0c_0b_0a_09_08;
     let mut buf = Vec::new();
+    let mut out_buf = [0u8; 16];
     let mut t = 0;
     let mut state_inc = SipHasher13::new_with_keys(k0, k1);
 
@@ -71,8 +72,10 @@ fn test_siphash128_1_3() {
 
         let full = hash_with(SipHasher13::new_with_keys(k0, k1), &Bytes(&buf));
         let i = state_inc.finish128().as_bytes();
+        state_inc.finish_buf(&mut out_buf);
 
         assert_eq!(full, i);
+        assert_eq!(full, out_buf[..]);
         assert_eq!(full, vec);
 
         buf.push(t as u8);
@@ -94,6 +97,7 @@ fn test_siphash128_2_4() {
     let k0 = 0x_07_06_05_04_03_02_01_00;
     let k1 = 0x_0f_0e_0d_0c_0b_0a_09_08;
     let mut buf = Vec::new();
+    let mut out_buf = [0u8; 32];    // deliberately use longer output buffer
     let mut t = 0;
     let mut state_inc = SipHasher24::new_with_keys(k0, k1);
 
@@ -104,8 +108,11 @@ fn test_siphash128_2_4() {
 
         let full = hash_with(SipHasher24::new_with_keys(k0, k1), &Bytes(&buf));
         let i = state_inc.finish128().as_bytes();
+        state_inc.finish_buf(&mut out_buf);
 
         assert_eq!(full, i);
+        assert_eq!(full, out_buf[0..16]);
+        assert!(full != out_buf[16..32]);
         assert_eq!(full, vec);
 
         buf.push(t as u8);

@@ -87,50 +87,62 @@ macro_rules! compress {
     });
 }
 
-/// Load an integer of the desired type from a byte stream, in LE order. Uses
-/// `copy_nonoverlapping` to let the compiler generate the most efficient way
-/// to load it from a possibly unaligned address.
-///
-/// Unsafe because: unchecked indexing at `i..i+size_of(int_ty)`
-macro_rules! load_int_le {
-    ($buf:expr, $i:expr, $int_ty:ident) =>
-    ({
-       debug_assert!($i + mem::size_of::<$int_ty>() <= $buf.len());
-       let mut data = 0 as $int_ty;
-       ptr::copy_nonoverlapping($buf.get_unchecked($i),
-                                &mut data as *mut _ as *mut u8,
-                                mem::size_of::<$int_ty>());
-       data.to_le()
-    });
-}
-
 /// Load an u64 using up to 7 bytes of a byte slice.
 ///
 /// Unsafe because: unchecked indexing at start..start+len
 #[inline]
 unsafe fn u8to64_le(buf: &[u8], start: usize, len: usize) -> u64 {
-    debug_assert!(len < 8);
-    let mut i = 0; // current byte index (from LSB) in the output u64
-    let mut out = 0;
-    if i + 3 < len {
-        out = load_int_le!(buf, start + i, u32) as u64;
-        i += 4;
+    debug_assert!(len <= 8);
+    debug_assert!(start + len  <= buf.len());
+    let mut out = 0u64;
+    ptr::copy_nonoverlapping(buf.get_unchecked(start),
+                                &mut out as *mut u64 as *mut u8,
+                                buf.len());
+    out.to_le()
+}
+
+/// Fill a slice of length < 8 bytes using a `u64`.
+/// 
+/// Unsafe because: use of raw pointers
+unsafe fn u64to8_le(mut v: u64, mut p: *mut u8, mut len: usize) {
+    if len > 3 {
+        let data = ((v & 0xFFFF_FFFF) as u32).to_le();
+        ptr::copy_nonoverlapping(&data as *const u32 as *const u8,
+                p,
+                mem::size_of::<u32>());
+        v = v >> 32;
+        p = p.offset(4);
+        len -= 2;
     }
-    if i + 1 < len {
-        out |= (load_int_le!(buf, start + i, u16) as u64) << (i * 8);
-        i += 2
+    if len > 1 {
+        let data = ((v & 0xFFFF) as u16).to_le();
+        ptr::copy_nonoverlapping(&data as *const u16 as *const u8,
+                p,
+                mem::size_of::<u16>());
+        v = v >> 16;
+        p = p.offset(2);
+        len -= 2;
     }
-    if i < len {
-        out |= (*buf.get_unchecked(start + i) as u64) << (i * 8);
-        i += 1;
+    if len > 0 {
+        debug_assert_eq!(len, 1);
+        let data = (v & 0xFF) as u8;
+        *p = data;
     }
-    debug_assert_eq!(i, len);
-    out
 }
 
 pub trait Hasher128 {
     /// Return a 128-bit hash
     fn finish128(&self) -> Hash128;
+    
+    /// Fill a buffer with the hash result.
+    /// 
+    /// This is valid for any size buffer. In case the buffer is larger than
+    /// the normal output size, the hash result is extended as necessary to
+    /// fill the buffer. (This uses the hash algorithm as a pseudo-random number
+    /// generator to extend the result as far as necessary. The result cannot
+    /// contain more entropy than the hasher's state size of 256 bits, but
+    /// should appear random.
+    fn finish_buf(&self, buf: &mut [u8]);
 }
 
 impl SipHasher {
@@ -153,10 +165,14 @@ impl SipHasher {
 }
 
 impl Hasher128 for SipHasher {
-    /// Return a 128-bit hash
     #[inline]
     fn finish128(&self) -> Hash128 {
         self.0.finish128()
+    }
+    
+    #[inline]
+    fn finish_buf(&self, buf: &mut [u8]) {
+        self.0.finish_buf(buf)
     }
 }
 
@@ -182,10 +198,14 @@ impl SipHasher13 {
 }
 
 impl Hasher128 for SipHasher13 {
-    /// Return a 128-bit hash
     #[inline]
     fn finish128(&self) -> Hash128 {
         self.hasher.finish128()
+    }
+    
+    #[inline]
+    fn finish_buf(&self, buf: &mut [u8]) {
+        self.hasher.finish_buf(buf)
     }
 }
 
@@ -211,10 +231,14 @@ impl SipHasher24 {
 }
 
 impl Hasher128 for SipHasher24 {
-    /// Return a 128-bit hash
     #[inline]
     fn finish128(&self) -> Hash128 {
         self.hasher.finish128()
+    }
+    
+    #[inline]
+    fn finish_buf(&self, buf: &mut [u8]) {
+        self.hasher.finish_buf(buf)
     }
 }
 
@@ -263,7 +287,7 @@ impl<S: Sip> Hasher<S> {
         let needed = 8 - self.ntail;
         let fill = cmp::min(length, needed);
         if fill == 8 {
-            self.tail = unsafe { load_int_le!(msg, 0, u64) };
+            self.tail = unsafe { u8to64_le(msg, 0, 8) };
         } else {
             self.tail |= unsafe { u8to64_le(msg, 0, fill) } << (8 * self.ntail);
             if length < needed {
@@ -301,6 +325,58 @@ impl<S: Sip> Hasher<S> {
         let h2 = state.v0 ^ state.v1 ^ state.v2 ^ state.v3;
 
         Hash128 { h1: h1, h2: h2 }
+    }
+    
+    pub fn finish_buf(&self, buf: &mut [u8]) {
+        let mut state = self.state;
+
+        let mut b: u64 = ((self.length as u64 & 0xff) << 56) | self.tail;
+        
+        let mut p: *mut u8 = buf.as_mut_ptr();
+        let mut rem = buf.len();
+
+        loop {
+            state.v3 ^= b;
+            S::c_rounds(&mut state);
+            state.v0 ^= b;
+
+            state.v2 ^= 0xee;
+            S::d_rounds(&mut state);
+            let h1 = state.v0 ^ state.v1 ^ state.v2 ^ state.v3;
+
+            state.v1 ^= 0xdd;
+            S::d_rounds(&mut state);
+            let h2 = state.v0 ^ state.v1 ^ state.v2 ^ state.v3;
+            
+            if rem >= 16 {
+                // I *think* we can rely on the obvious memory layout here?
+                let v = (h1.to_le(), h2.to_le());
+                unsafe {
+                    ptr::copy_nonoverlapping(&v.0 as *const u64 as *const u8,
+                            p,
+                            mem::size_of::<u64>() * 2);
+                    p = p.offset(16);
+                }
+                rem -= 16;
+                if rem > 0 {
+                    b = b.wrapping_add(1);
+                    continue;
+                }
+            } else if rem >= 8 {
+                let v = h1.to_le();
+                unsafe {
+                    ptr::copy_nonoverlapping(&v as *const u64 as *const u8,
+                            p,
+                            mem::size_of::<u64>());
+                    u64to8_le(h2, p.offset(8), rem - 8);
+                }
+            } else if rem > 0 {
+                unsafe {
+                    u64to8_le(h1, p, rem);
+                }
+            }
+            break;
+        }
     }
 }
 
@@ -383,7 +459,7 @@ impl<S: Sip> hash::Hasher for Hasher<S> {
 
         let mut i = needed;
         while i < len - left {
-            let mi = unsafe { load_int_le!(msg, i, u64) };
+            let mi = unsafe { u8to64_le(msg, i, 8) };
 
             self.state.v3 ^= mi;
             S::c_rounds(&mut self.state);
