@@ -300,7 +300,7 @@ impl<S: Sip> Hasher<S> {
         S::d_rounds(&mut state);
         let h2 = state.v0 ^ state.v1 ^ state.v2 ^ state.v3;
 
-        Hash128 { h1: h1, h2: h2 }
+        Hash128 { h1, h2 }
     }
 }
 
