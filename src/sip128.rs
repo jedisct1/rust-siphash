@@ -24,6 +24,21 @@ pub struct Hash128 {
     pub h2: u64,
 }
 
+impl From<u128> for Hash128 {
+    fn from(v: u128) -> Self {
+        Hash128 {
+            h1: v as u64,
+            h2: (v >> 64) as u64,
+        }
+    }
+}
+
+impl Into<u128> for Hash128 {
+    fn into(self) -> u128 {
+        (self.h1 as u128) | ((self.h2 as u128) << 64)
+    }
+}
+
 /// An implementation of SipHash128 1-3.
 #[derive(Debug, Clone, Copy, Default)]
 pub struct SipHasher13 {
