@@ -18,7 +18,7 @@ In `Cargo.toml`:
 
 ```toml
 [dependencies]
-siphasher = "~0.2"
+siphasher = "0.3"
 ```
 
 64-bit mode:
