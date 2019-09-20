@@ -502,4 +502,20 @@ impl Hash128 {
         }
         bytes
     }
+
+    /// Convert into a `u128`
+    #[inline]
+    pub fn as_u128(&self) -> u128 {
+        let h1 = self.h1.to_le();
+        let h2 = self.h2.to_le();
+        h1 as u128 | ((h2 as u128) << 64)
+    }
+
+    /// Convert into `(u64, u64)`
+    #[inline]
+    pub fn as_u64(&self) -> (u64, u64) {
+        let h1 = self.h1.to_le();
+        let h2 = self.h2.to_le();
+        (h1, h2)
+    }
 }
