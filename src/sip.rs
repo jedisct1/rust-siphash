@@ -20,7 +20,7 @@ use core::slice;
 /// An implementation of SipHash 1-3.
 ///
 /// See: <https://131002.net/siphash/>
-#[derive(Debug, Clone, Copy, Default)]
+#[derive(Debug, Clone, Copy, Default, PartialEq)]
 #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
 pub struct SipHasher13 {
     hasher: Hasher<Sip13Rounds>,
@@ -29,7 +29,7 @@ pub struct SipHasher13 {
 /// An implementation of SipHash 2-4.
 ///
 /// See: <https://131002.net/siphash/>
-#[derive(Debug, Clone, Copy, Default)]
+#[derive(Debug, Clone, Copy, Default, PartialEq)]
 #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
 pub struct SipHasher24 {
     hasher: Hasher<Sip24Rounds>,
@@ -47,11 +47,11 @@ pub struct SipHasher24 {
 /// Although the SipHash algorithm is considered to be generally strong,
 /// it is not intended for cryptographic purposes. As such, all
 /// cryptographic uses of this implementation are _strongly discouraged_.
-#[derive(Debug, Clone, Copy, Default)]
+#[derive(Debug, Clone, Copy, Default, PartialEq)]
 #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
 pub struct SipHasher(SipHasher24);
 
-#[derive(Debug, Clone, Copy)]
+#[derive(Debug, Clone, Copy, PartialEq)]
 #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
 struct Hasher<S: Sip> {
     k0: u64,
@@ -63,7 +63,7 @@ struct Hasher<S: Sip> {
     _marker: PhantomData<S>,
 }
 
-#[derive(Debug, Clone, Copy)]
+#[derive(Debug, Clone, Copy, PartialEq)]
 #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
 struct State {
     // v0, v2 and v1, v3 show up in pairs in the algorithm,
@@ -387,7 +387,7 @@ trait Sip {
     fn d_rounds(_: &mut State);
 }
 
-#[derive(Debug, Clone, Copy, Default)]
+#[derive(Debug, Clone, Copy, Default, PartialEq)]
 struct Sip13Rounds;
 
 impl Sip for Sip13Rounds {
@@ -404,7 +404,7 @@ impl Sip for Sip13Rounds {
     }
 }
 
-#[derive(Debug, Clone, Copy, Default)]
+#[derive(Debug, Clone, Copy, Default, PartialEq)]
 struct Sip24Rounds;
 
 impl Sip for Sip24Rounds {
