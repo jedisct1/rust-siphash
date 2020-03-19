@@ -320,3 +320,12 @@ fn test_hash_no_concat_alias() {
     assert_ne!(v, w);
     assert_ne!(hash(&v), hash(&w));
 }
+
+#[test]
+fn test_hash_serde() {
+    let val64 = 0xdeadbeef_deadbeef_u64;
+    let hash = hash(&val64);
+    let serialized = serde_json::to_string(&hash).unwrap();
+    let deserialized: u64 = serde_json::from_str(&serialized).unwrap();
+    assert_eq!(hash, deserialized);
+}
