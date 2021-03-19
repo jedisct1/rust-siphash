@@ -2,9 +2,6 @@
 #![allow(clippy::unreadable_literal)]
 #![allow(clippy::cast_lossless)]
 
-#[cfg(test)]
-extern crate core;
-
 pub mod sip;
 pub mod sip128;
 
@@ -13,3 +10,8 @@ mod tests;
 
 #[cfg(test)]
 mod tests128;
+
+#[cfg(feature = "serde")]
+pub mod reexports {
+    pub use serde;
+}

@@ -8,8 +8,9 @@ repository = "https://github.com/jedisct1/rust-siphash"
 homepage = "https://docs.rs/siphasher"
 documentation = "https://docs.rs/siphasher"
 readme = "README.md"
-version = "0.3.3"
+version = "0.3.4"
 categories = ["algorithms", "cryptography"]
+edition = "2018"
 
 [badges]
 travis-ci = { repository = "jedisct1/rust-siphash" }
