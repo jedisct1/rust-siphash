@@ -349,6 +349,31 @@ impl hash::Hasher for SipHasher {
     fn finish(&self) -> u64 {
         self.0.finish()
     }
+
+    #[inline]
+    fn write_usize(&mut self, i: usize) {
+        self.0.write_usize(i);
+    }
+
+    #[inline]
+    fn write_u8(&mut self, i: u8) {
+        self.0.write_u8(i);
+    }
+
+    #[inline]
+    fn write_u16(&mut self, i: u16) {
+        self.0.write_u16(i);
+    }
+
+    #[inline]
+    fn write_u32(&mut self, i: u32) {
+        self.0.write_u32(i);
+    }
+
+    #[inline]
+    fn write_u64(&mut self, i: u64) {
+        self.0.write_u64(i);
+    }
 }
 
 impl hash::Hasher for SipHasher13 {
@@ -361,6 +386,31 @@ impl hash::Hasher for SipHasher13 {
     fn finish(&self) -> u64 {
         self.hasher.finish()
     }
+
+    #[inline]
+    fn write_usize(&mut self, i: usize) {
+        self.hasher.write_usize(i);
+    }
+
+    #[inline]
+    fn write_u8(&mut self, i: u8) {
+        self.hasher.write_u8(i);
+    }
+
+    #[inline]
+    fn write_u16(&mut self, i: u16) {
+        self.hasher.write_u16(i);
+    }
+
+    #[inline]
+    fn write_u32(&mut self, i: u32) {
+        self.hasher.write_u32(i);
+    }
+
+    #[inline]
+    fn write_u64(&mut self, i: u64) {
+        self.hasher.write_u64(i);
+    }
 }
 
 impl hash::Hasher for SipHasher24 {
@@ -372,6 +422,31 @@ impl hash::Hasher for SipHasher24 {
     #[inline]
     fn finish(&self) -> u64 {
         self.hasher.finish()
+    }
+
+    #[inline]
+    fn write_usize(&mut self, i: usize) {
+        self.hasher.write_usize(i);
+    }
+
+    #[inline]
+    fn write_u8(&mut self, i: u8) {
+        self.hasher.write_u8(i);
+    }
+
+    #[inline]
+    fn write_u16(&mut self, i: u16) {
+        self.hasher.write_u16(i);
+    }
+
+    #[inline]
+    fn write_u32(&mut self, i: u32) {
+        self.hasher.write_u32(i);
+    }
+
+    #[inline]
+    fn write_u64(&mut self, i: u64) {
+        self.hasher.write_u64(i);
     }
 }
 
