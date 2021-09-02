@@ -15,6 +15,7 @@ use core::hash;
 use core::marker::PhantomData;
 use core::mem;
 use core::ptr;
+use core::u64;
 
 /// A 128-bit (2x64) hash output
 #[derive(Debug, Clone, Copy, Default)]

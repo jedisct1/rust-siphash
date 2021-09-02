@@ -15,6 +15,7 @@ use core::hash;
 use core::marker::PhantomData;
 use core::mem;
 use core::ptr;
+use core::u64;
 
 /// An implementation of SipHash 1-3.
 ///
