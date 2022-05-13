@@ -18,7 +18,9 @@ pub mod reexports {
 }
 
 pub mod prelude {
-    pub use crate::{sip, sip128};
     pub use core::hash::Hasher as _;
+
     pub use sip128::Hasher128 as _;
+
+    pub use crate::{sip, sip128};
 }

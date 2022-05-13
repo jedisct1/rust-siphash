@@ -8,8 +8,9 @@
 // option. This file may not be copied, modified, or distributed
 // except according to those terms.
 
-use super::sip128::{Hasher128, SipHasher, SipHasher13, SipHasher24};
 use std::hash::{Hash, Hasher};
+
+use super::sip128::{Hasher128, SipHasher, SipHasher13, SipHasher24};
 
 // Hash just the bytes of the slice, without length prefix
 struct Bytes<'a>(&'a [u8]);
