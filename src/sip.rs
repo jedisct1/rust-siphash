@@ -458,7 +458,7 @@ impl<S: Sip> hash::Hasher for Hasher<S> {
 
     #[inline]
     fn write_u64(&mut self, i: u64) {
-        self.short_write(i, i.to_le() as u64);
+        self.short_write(i, i.to_le());
     }
 
     #[inline]
