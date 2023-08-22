@@ -29,6 +29,7 @@ siphasher = { version = "0.3", features = ["serde"] }
 ```
 
 64-bit mode:
+
 ```rust
 extern crate siphasher;
 
@@ -36,6 +37,7 @@ use siphasher::sip::{SipHasher, SipHasher13, SipHasher24};
 ```
 
 128-bit mode:
+
 ```rust
 use siphasher::sip128::{Hasher128, Siphasher, SipHasher13, SipHasher24};
 ```
