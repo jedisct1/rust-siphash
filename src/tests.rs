@@ -301,6 +301,7 @@ fn test_hash_no_concat_alias() {
 }
 
 #[test]
+#[cfg(all(feature = "serde", feature = "serde_json"))]
 fn test_hash_serde() {
     let val64 = 0xdead_beef_dead_beef_u64;
     let hash = hash(&val64);

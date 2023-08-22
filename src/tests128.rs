@@ -95,6 +95,7 @@ fn test_siphash128_2_4() {
 }
 
 #[test]
+#[cfg(all(feature = "serde", feature = "serde_json"))]
 fn test_siphash128_serde() {
     let val64 = 0xdead_beef_dead_beef_u64;
     let hash = hash(&val64);

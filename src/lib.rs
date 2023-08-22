@@ -15,6 +15,8 @@ mod tests128;
 #[cfg(any(feature = "serde", feature = "serde_std", feature = "serde_no_std"))]
 pub mod reexports {
     pub use serde;
+    #[cfg(feature = "serde_json")]
+    pub use serde_json;
 }
 
 pub mod prelude {
