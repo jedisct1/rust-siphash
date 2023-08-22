@@ -33,6 +33,14 @@ fn hash<T: Hash>(x: &T) -> [u8; 16] {
 }
 
 #[test]
+fn test_siphash128_idempotent() {
+    let val64 = 0xdead_beef_dead_beef_u64;
+    assert_eq!(hash(&val64), hash(&val64));
+    let val32 = 0xdeadbeef_u32;
+    assert_eq!(hash(&val32), hash(&val32));
+}
+
+#[test]
 #[allow(unused_must_use)]
 fn test_siphash128_1_3() {
     let vecs: [[u8; 16]; 1] = [[
