@@ -296,12 +296,6 @@ impl<S: Sip> Hasher<S> {
     // The hashing of multi-byte integers depends on endianness. E.g.:
     // - little-endian: `write_u32(0xDDCCBBAA)` == `write([0xAA, 0xBB, 0xCC, 0xDD])`
     // - big-endian:    `write_u32(0xDDCCBBAA)` == `write([0xDD, 0xCC, 0xBB, 0xAA])`
-    //
-    // This function does the right thing for little-endian hardware. On
-    // big-endian hardware `x` must be byte-swapped first to give the right
-    // behaviour. After any byte-swapping, the input must be zero-extended to
-    // 64-bits. The caller is responsible for the byte-swapping and
-    // zero-extension.
     #[inline]
     fn short_write<T>(&mut self, _x: T, x: u64) {
         let size = mem::size_of::<T>();
@@ -443,7 +437,7 @@ impl hash::Hasher for SipHasher24 {
 impl<S: Sip> hash::Hasher for Hasher<S> {
     #[inline]
     fn write_usize(&mut self, i: usize) {
-        self.short_write(i, i.to_le() as u64);
+        self.short_write(i, i as u64);
     }
 
     #[inline]
@@ -453,12 +447,12 @@ impl<S: Sip> hash::Hasher for Hasher<S> {
 
     #[inline]
     fn write_u32(&mut self, i: u32) {
-        self.short_write(i, i.to_le() as u64);
+        self.short_write(i, i as u64);
     }
 
     #[inline]
     fn write_u64(&mut self, i: u64) {
-        self.short_write(i, i.to_le());
+        self.short_write(i, i);
     }
 
     #[inline]
