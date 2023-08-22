@@ -13,6 +13,7 @@ module implements the 128-bit mode.
 
 Usage
 -----
+
 In `Cargo.toml`:
 
 ```toml
@@ -41,3 +42,14 @@ use siphasher::sip128::{Hasher128, Siphasher, SipHasher13, SipHasher24};
 
 [API documentation](https://docs.rs/siphasher/)
 -----------------------------------------------
+
+Note
+----
+
+The `Hasher` trait from the standard library includes methods such as `write_u32()` or `write_usize()` that look perfect in order to hash values.
+
+However, what the standard library documentation doesn't mention (or maybe it does, but this is not obvious) is that these functions are equivalent to hashing a byte array representation of these values *in native order*.
+
+So using `write_u32()` may cause a hash function to return different results according to the host endianness. When using `serde` on structures containing primitive values, don't expect the result to be portable.
+
+This is a poor design decision, counterintuitive and unsafe, but that's the way it is.
