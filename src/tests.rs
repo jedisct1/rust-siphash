@@ -301,6 +301,27 @@ fn test_hash_no_concat_alias() {
 }
 
 #[test]
+fn test_hash_simple() {
+    let array: &[u8] = &[1, 2, 3];
+    let key: &[u8; 16] = &[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16];
+    let hasher = SipHasher13::new_with_key(key);
+    let h = hasher.hash(array);
+    _ = h;
+}
+
+#[test]
+fn test_hash_incremental() {
+    let array1: &[u8] = &[1, 2, 3];
+    let array2: &[u8] = &[4, 5, 6];
+    let key: &[u8; 16] = &[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16];
+    let mut hasher = SipHasher13::new_with_key(key);
+    hasher.write(array1);
+    hasher.write(array2);
+    let h = hasher.finish();
+    _ = h;
+}
+
+#[test]
 #[cfg(all(feature = "serde", feature = "serde_json"))]
 fn test_hash_serde() {
     let val64 = 0xdead_beef_dead_beef_u64;
