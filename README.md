@@ -25,7 +25,7 @@ If you want [serde](https://github.com/serde-rs/serde) support, include the feat
 
 ```toml
 [dependencies]
-siphasher = { version = "0.3", features = ["serde"] }
+siphasher = { version = "1", features = ["serde"] }
 ```
 
 64-bit mode:
