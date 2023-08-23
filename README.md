@@ -18,7 +18,7 @@ In `Cargo.toml`:
 
 ```toml
 [dependencies]
-siphasher = "0.3"
+siphasher = "1"
 ```
 
 If you want [serde](https://github.com/serde-rs/serde) support, include the feature like this:
