@@ -181,6 +181,7 @@ impl SipHasher {
     }
 
     /// Hash a byte array - This is the easiest and safest way to use SipHash.
+    #[inline]
     pub fn hash(&self, bytes: &[u8]) -> u64 {
         let mut hasher = self.0.hasher;
         hasher.write(bytes);
@@ -228,6 +229,7 @@ impl SipHasher13 {
     }
 
     /// Hash a byte array - This is the easiest and safest way to use SipHash.
+    #[inline]
     pub fn hash(&self, bytes: &[u8]) -> u64 {
         let mut hasher = self.hasher;
         hasher.write(bytes);
@@ -275,6 +277,7 @@ impl SipHasher24 {
     }
 
     /// Hash a byte array - This is the easiest and safest way to use SipHash.
+    #[inline]
     pub fn hash(&self, bytes: &[u8]) -> u64 {
         let mut hasher = self.hasher;
         hasher.write(bytes);
