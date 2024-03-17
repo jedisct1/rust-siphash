@@ -12,9 +12,6 @@ version = "1.0.0"
 categories = ["algorithms", "cryptography"]
 edition = "2018"
 
-[badges]
-travis-ci = { repository = "jedisct1/rust-siphash" }
-
 [profile.release]
 lto = true
 panic = "abort"
