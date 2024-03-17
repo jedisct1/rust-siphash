@@ -56,7 +56,7 @@ let h = hasher.finish();
 128-bit mode:
 
 ```rust
-use siphasher::sip128::{Hasher128, Siphasher, SipHasher13, SipHasher24};
+use siphasher::sip128::{Hasher128, SipHasher, SipHasher13, SipHasher24};
 
 // one-shot:
 
