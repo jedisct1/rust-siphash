@@ -21,6 +21,7 @@ use core::u64;
 /// A 128-bit (2x64) hash output
 #[derive(Debug, Clone, Copy, Default)]
 #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
+#[cfg_attr(feature = "mem_dbg", derive(mem_dbg::MemDbg, mem_dbg::MemSize))]
 pub struct Hash128 {
     pub h1: u64,
     pub h2: u64,
@@ -44,6 +45,7 @@ impl From<Hash128> for u128 {
 /// An implementation of SipHash128 1-3.
 #[derive(Debug, Clone, Copy, Default)]
 #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
+#[cfg_attr(feature = "mem_dbg", derive(mem_dbg::MemDbg, mem_dbg::MemSize))]
 pub struct SipHasher13 {
     hasher: Hasher<Sip13Rounds>,
 }
@@ -51,6 +53,7 @@ pub struct SipHasher13 {
 /// An implementation of SipHash128 2-4.
 #[derive(Debug, Clone, Copy, Default)]
 #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
+#[cfg_attr(feature = "mem_dbg", derive(mem_dbg::MemDbg, mem_dbg::MemSize))]
 pub struct SipHasher24 {
     hasher: Hasher<Sip24Rounds>,
 }
@@ -66,10 +69,12 @@ pub struct SipHasher24 {
 /// it is not intended for cryptographic purposes. As such, all
 /// cryptographic uses of this implementation are _strongly discouraged_.
 #[derive(Debug, Clone, Copy, Default)]
+#[cfg_attr(feature = "mem_dbg", derive(mem_dbg::MemDbg, mem_dbg::MemSize))]
 pub struct SipHasher(SipHasher24);
 
 #[derive(Debug, Copy)]
 #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
+#[cfg_attr(feature = "mem_dbg", derive(mem_dbg::MemDbg, mem_dbg::MemSize))]
 struct Hasher<S: Sip> {
     k0: u64,
     k1: u64,
@@ -82,6 +87,7 @@ struct Hasher<S: Sip> {
 
 #[derive(Debug, Clone, Copy)]
 #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
+#[cfg_attr(feature = "mem_dbg", derive(mem_dbg::MemDbg, mem_dbg::MemSize))]
 struct State {
     // v0, v2 and v1, v3 show up in pairs in the algorithm,
     // and simd implementations of SipHash will use vectors
@@ -630,6 +636,7 @@ trait Sip {
 }
 
 #[derive(Debug, Clone, Copy, Default)]
+#[cfg_attr(feature = "mem_dbg", derive(mem_dbg::MemDbg, mem_dbg::MemSize))]
 struct Sip13Rounds;
 
 impl Sip for Sip13Rounds {
@@ -647,6 +654,7 @@ impl Sip for Sip13Rounds {
 }
 
 #[derive(Debug, Clone, Copy, Default)]
+#[cfg_attr(feature = "mem_dbg", derive(mem_dbg::MemDbg, mem_dbg::MemSize))]
 struct Sip24Rounds;
 
 impl Sip for Sip24Rounds {
