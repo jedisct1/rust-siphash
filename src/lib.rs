@@ -1,6 +1,6 @@
 #![doc = include_str!("../README.md")]
 
-#![cfg_attr(not(test), no_std)]
+#![cfg_attr(all(not(test), not(feature = "std")), no_std)]
 #![allow(clippy::unreadable_literal)]
 #![allow(clippy::cast_lossless)]
 #![allow(clippy::many_single_char_names)]
