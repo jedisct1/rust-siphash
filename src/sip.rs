@@ -146,13 +146,13 @@ unsafe fn u8to64_le(buf: &[u8], start: usize, len: usize) -> u64 {
 impl SipHasher {
     /// Creates a new `SipHasher` with the two initial keys set to 0.
     #[inline]
-    pub fn new() -> SipHasher {
+    pub const fn new() -> SipHasher {
         SipHasher::new_with_keys(0, 0)
     }
 
     /// Creates a `SipHasher` that is keyed off the provided keys.
     #[inline]
-    pub fn new_with_keys(key0: u64, key1: u64) -> SipHasher {
+    pub const fn new_with_keys(key0: u64, key1: u64) -> SipHasher {
         SipHasher(SipHasher24::new_with_keys(key0, key1))
     }
 
@@ -168,7 +168,7 @@ impl SipHasher {
     }
 
     /// Get the keys used by this hasher
-    pub fn keys(&self) -> (u64, u64) {
+    pub const fn keys(&self) -> (u64, u64) {
         (self.0.hasher.k0, self.0.hasher.k1)
     }
 
@@ -192,13 +192,13 @@ impl SipHasher {
 impl SipHasher13 {
     /// Creates a new `SipHasher13` with the two initial keys set to 0.
     #[inline]
-    pub fn new() -> SipHasher13 {
+    pub const fn new() -> SipHasher13 {
         SipHasher13::new_with_keys(0, 0)
     }
 
     /// Creates a `SipHasher13` that is keyed off the provided keys.
     #[inline]
-    pub fn new_with_keys(key0: u64, key1: u64) -> SipHasher13 {
+    pub const fn new_with_keys(key0: u64, key1: u64) -> SipHasher13 {
         SipHasher13 {
             hasher: Hasher::new_with_keys(key0, key1),
         }
@@ -216,7 +216,7 @@ impl SipHasher13 {
     }
 
     /// Get the keys used by this hasher
-    pub fn keys(&self) -> (u64, u64) {
+    pub const fn keys(&self) -> (u64, u64) {
         (self.hasher.k0, self.hasher.k1)
     }
 
@@ -240,13 +240,13 @@ impl SipHasher13 {
 impl SipHasher24 {
     /// Creates a new `SipHasher24` with the two initial keys set to 0.
     #[inline]
-    pub fn new() -> SipHasher24 {
+    pub const fn new() -> SipHasher24 {
         SipHasher24::new_with_keys(0, 0)
     }
 
     /// Creates a `SipHasher24` that is keyed off the provided keys.
     #[inline]
-    pub fn new_with_keys(key0: u64, key1: u64) -> SipHasher24 {
+    pub const fn new_with_keys(key0: u64, key1: u64) -> SipHasher24 {
         SipHasher24 {
             hasher: Hasher::new_with_keys(key0, key1),
         }
@@ -264,7 +264,7 @@ impl SipHasher24 {
     }
 
     /// Get the keys used by this hasher
-    pub fn keys(&self) -> (u64, u64) {
+    pub const fn keys(&self) -> (u64, u64) {
         (self.hasher.k0, self.hasher.k1)
     }
 
@@ -287,7 +287,7 @@ impl SipHasher24 {
 
 impl<S: Sip> Hasher<S> {
     #[inline]
-    fn new_with_keys(key0: u64, key1: u64) -> Hasher<S> {
+    const fn new_with_keys(key0: u64, key1: u64) -> Hasher<S> {
         let mut state = Hasher {
             k0: key0,
             k1: key1,
@@ -302,18 +302,20 @@ impl<S: Sip> Hasher<S> {
             ntail: 0,
             _marker: PhantomData,
         };
-        state.reset();
+        state = state.reset();
         state
     }
 
     #[inline]
-    fn reset(&mut self) {
+    #[must_use]
+    const fn reset(mut self) -> Self {
         self.length = 0;
         self.state.v0 = self.k0 ^ 0x736f6d6570736575;
         self.state.v1 = self.k1 ^ 0x646f72616e646f6d;
         self.state.v2 = self.k0 ^ 0x6c7967656e657261;
         self.state.v3 = self.k1 ^ 0x7465646279746573;
         self.ntail = 0;
+        self
     }
 
     // A specialized write function for values with size <= 8.
