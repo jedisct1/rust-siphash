@@ -26,6 +26,15 @@ pub struct Hash128 {
     pub h2: u64,
 }
 
+impl PartialEq for Hash128 {
+    fn eq(&self, other: &Self) -> bool {
+        let x = (self.h1 ^ other.h1) | (self.h2 ^ other.h2);
+        unsafe { core::ptr::read_volatile(&x) == 0 }
+    }
+}
+
+impl Eq for Hash128 {}
+
 impl From<u128> for Hash128 {
     fn from(v: u128) -> Self {
         Hash128 {
