@@ -1,6 +1,6 @@
 // Copyright 2012-2015 The Rust Project Developers. See the COPYRIGHT
 // file at the top-level directory of this distribution and at
-// http://rust-lang.org/COPYRIGHT.
+// https://github.com/rust-lang/rust/blob/1.0.0/COPYRIGHT.
 //
 // Licensed under the Apache License, Version 2.0 <LICENSE-APACHE or
 // http://www.apache.org/licenses/LICENSE-2.0> or the MIT license
@@ -43,7 +43,7 @@ pub struct SipHasher24 {
 /// SipHash is a general-purpose hashing function: it runs at a good
 /// speed (competitive with Spooky and City) and permits strong _keyed_
 /// hashing. This lets you key your hashtables from a strong RNG, such as
-/// [`rand::os::OsRng`](https://doc.rust-lang.org/rand/rand/os/struct.OsRng.html).
+/// [`rand::rngs::OsRng`](https://docs.rs/rand/0.9/rand/rngs/struct.OsRng.html).
 ///
 /// Although the SipHash algorithm is considered to be generally strong,
 /// it is not intended for cryptographic purposes. As such, all
